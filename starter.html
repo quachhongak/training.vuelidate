@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.1/css/bootstrap.min.css' />
+    <!-- Jquery -->
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js'></script>
+    <!-- Vue -->
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.js'></script>
+    <!-- 3rd party -->
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.1/js/bootstrap.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js'></script>
+
+    <script type="text/javascript">
+    $(document).ready(function() {
+        new Vue({
+            el: '#app',
+            data: {
+                configuration: {
+                    country: ['Belgium', 'France', 'UK', 'US']
+                },
+                form: {
+                    firstname: null,
+                    lastname: null,
+                    age: null,
+                    like_beer: false,
+                    beer_add: {
+                        name: null,
+                        country: "",
+                    },
+                    beers: [],
+
+                }
+            },
+            methods: {
+                //fake submit
+                submit: function(e) {
+                    if(e) e.preventDefault();
+                    alert('Submitted')
+                },
+                //add beers to list
+                addBeer: function(e) {
+                    if(e) e.preventDefault();
+
+                    var vm = this;
+
+                    vm.form.beers.push(vm.form.beer_add);
+
+                    vm.form.beer_add = {
+                        name: null,
+                        country: "",
+                    };
+                }
+            },
+            filters: {
+            },
+            components: {
+            },
+            computed: {
+                is_great_than_21: function() {
+                    return (this.form.age >= 21) ? true : false;
+                }
+            },
+            created: function() {
+            }
+        });
+    })
+    </script>
+    
+</head>
+<body>
+    <div id="app" class="container">
+        <div class="row">
+            <form>
+                <div class="form-group">
+                    <label>First Name</label>
+                    <input type="text" v-model="form.firstname" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label>Last Name</label>
+                    <input type="text" v-model="form.lastname" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label>Age</label>
+                    <input type="number" v-model="form.age" class="form-control" />
+                </div>
+                <div class="form-group" v-if="is_great_than_21">
+                    <label>Do you like beers?</label>
+                    <select  class="form-control" v-model="form.like_beer">
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                    </select>
+                </div>
+                <div class="form-group" v-if="is_great_than_21 && form.like_beer">
+                    <label>Please list few brands:</label>
+
+                    <div class="row">
+                        <div class="col-4">
+                            <input type="text" placeholder="Beer Name" class="form-control" v-model="form.beer_add.name"/>
+                        </div>
+                        <div class="col-4">
+                            <select  class="form-control" v-model="form.beer_add.country">
+                                <option value="" disabled>Please select a country</option>
+                                <option v-for="c in configuration.country">{{c}}</option>
+                            </select>
+                        </div>
+                        <div class="col-4">
+                            <a href="#" @click="addBeer($event)">+ Add</a>
+                        </div>
+                    </div>
+                    <ul class="list-unstyled" v-if="form.beers.length">
+                        <li class="row" v-for="b in form.beers">
+                            <h5>{{b.name}}, {{b.country}}</h5>
+                        </li>
+                    </ul>
+                </div>
+                <div class="mt-5">
+                    <a href="" class="btn btn-success" @click="submit($event)">Submit</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

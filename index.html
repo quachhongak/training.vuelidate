@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.1/css/bootstrap.min.css' />
+    <!-- Jquery -->
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js'></script>
+    <!-- Vue -->
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.js'></script>
+    <!-- 3rd party -->
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.1/js/bootstrap.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js'></script>
+    <script src="https://unpkg.com/vuelidate@0.7.6/dist/vuelidate.min.js"></script>
+    <script src="https://unpkg.com/vuelidate@0.7.6/dist/validators.min.js"></script>    
+
+    <script type="text/javascript">
+    $(document).ready(function() {
+        const { required, minLength, email, between } = window.validators;
+        Vue.use(window.vuelidate.default);
+
+        new Vue({
+            el: '#app',
+            data : {
+                form: {
+                    firstname: null,
+                    lastname: null,
+                    email: null,
+                    age: null,
+                }
+            },
+            validations: {
+                form: {
+                    firstname: { required },
+                    lastname: { required },
+                    email: { required, email },
+                    age: { between: between(0, 21) },
+                }
+            },
+            methods: {
+                //fake submit
+                submit: function(e) {
+
+                    if(e) e.preventDefault();
+                    this.$v.form.$touch();
+
+                    if(this.$v.$invalid) {
+                        var get_error_fields = '';
+                    } else {
+                        alert('Submitted')
+                    }
+
+                },
+            },
+            filters: {
+            },
+            components: {
+            },
+            computed: {
+            },
+            created: function() {
+            }
+        });
+    })
+    </script>
+    
+</head>
+<body>
+    <div id="app" class="container">
+        <div class="row">
+            <form>
+                <div class="form-group">
+                    <label>First Name
+                        <span class="text-danger" v-if="$v.form.firstname.$params.required">*</span>
+                    </label>
+                    <input type="text" v-model="form.firstname" class="form-control" :class="$v.form.firstname.$error ? 'is-invalid' : ''" />
+                    <div class="text-danger" v-show="$v.form.firstname.$error">
+                        First name is required
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Last Name
+                        <span class="text-danger" v-if="$v.form.lastname.$params.required">*</span>
+                    </label>
+                    <input type="text" v-model="form.lastname" class="form-control" :class="$v.form.lastname.$error ? 'is-invalid' : ''"/>
+                    <div class="text-danger" v-show="$v.form.lastname.$error">
+                        Last name is required
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Email
+                        <span class="text-danger" v-if="$v.form.email.$params.required">*</span>
+                    </label>
+                    <input type="text" v-model="form.email" class="form-control" :class="$v.form.email.$error ? 'is-invalid' : ''" />
+                    <div class="text-danger" v-show="$v.form.email.$error">
+                        <span v-show="!$v.form.email.required">Email is required</span>
+                        <span v-show="!$v.form.email.email">Email is not valid</span>
+                    </div>
+
+                </div>
+                <div class="form-group">
+                    <label>Age
+                        <span class="text-danger" v-if="$v.form.age.$params.required">*</span>
+                    </label>
+                    <input type="number" v-model="form.age" class="form-control" :class="$v.form.age.$error ? 'is-invalid' : ''" />
+                    <div class="text-danger" v-show="$v.form.age.$error">
+                        <span v-show="!$v.form.email.betwee">Age needs to be between 0 and 21</span>
+                    </div>
+                </div>
+                
+                <div class="mt-5">
+                    <a href="" class="btn btn-success" @click="submit($event)">Submit</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
